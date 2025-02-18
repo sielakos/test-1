@@ -23,8 +23,8 @@ jobs:
         pip install playwright 
         playwright install
     - name: Run your tests
-      run: python test2.py
-      # run: python test2.py > test.txt
+      # run: python test2.py
+      run: python test2.py > test.txt
     - name: Configure Git
       run: |
         git config user.name github-actions
