@@ -6,8 +6,6 @@ with sync_playwright() as p:
     page = browser.new_page()
     page.goto('https://stooq.pl/q/?s=eurpln')
 
-    print(page.evaluate('''() => document.body.innerHTML'''))
-
     try:
         page.locator('.fc-primary-button').click()
 
