@@ -1,8 +1,8 @@
 name: Stooq fetch
 on: 
   schedule:
-    - cron: '5 10 * * *'push:
-  pudh:
+    - cron: '8 10 * * *'
+  push:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
