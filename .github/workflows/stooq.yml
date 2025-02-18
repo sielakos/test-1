@@ -1,0 +1,40 @@
+name: Stooq fetch
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyppeteer
+    - name: Run your tests
+      run: python test.py > test.txt
+    - name: Configure Git
+      run: |
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+    - name: Add output file to git
+      run: git add test.txt
+    - name: Commit changes
+      run: |
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "Add output from python script"
+        fi
+    - name: Push changes
+      uses: ad-m/github-push-action@v0.9.0
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.ref }
