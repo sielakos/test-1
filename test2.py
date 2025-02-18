@@ -8,9 +8,12 @@ with sync_playwright() as p:
 
     print(page.evaluate('''() => document.body.innerHTML'''))
 
-    page.locator('.fc-primary-button').click()
+    try:
+        page.locator('.fc-primary-button').click()
 
-    time.sleep(5)
+        time.sleep(5)
+    except:
+        pass
 
     rate = page.evaluate('''() => {
         return document.getElementById('aq_eurpln#1_c5').textContent;
