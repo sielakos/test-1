@@ -6,7 +6,7 @@ with sync_playwright() as p:
     page = browser.new_page()
     page.goto('https://stooq.pl/q/?s=eurpln')
 
-    page.get_by_text("Zgadzam się").click()
+    page.locator('.fc-primary-button').click()
 
     time.sleep(5)
 
