@@ -8,6 +8,9 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    permissions:                # Job-level permissions configuration starts here
+      contents: write           # 'write' access to repository contents
+      pull-requests: write      # 'write' access to pull requests
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python
@@ -34,7 +37,7 @@ jobs:
           git commit -m "Add output from python script"
         fi
     - name: Push changes
-      uses: ad-m/github-push-action@v0.9.0
+      uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: ${{ github.ref }}
