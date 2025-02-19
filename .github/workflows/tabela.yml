@@ -1,7 +1,7 @@
 name: Tabela fetch
 on: 
   schedule:
-    - cron: '12 12 * * *'
+    - cron: '22 * * * *'
   push:
     branches: [ main, master ]
   pull_request:
