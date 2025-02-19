@@ -2,6 +2,7 @@ from playwright.sync_api import sync_playwright
 import time
 import datetime
 import pandas as pd
+from io import StringIO
 
 # Format the date as YYYY-MM-DD
 date_string = datetime.date.today().strftime("%Y-%m-%d")
@@ -26,9 +27,7 @@ with sync_playwright() as p:
         return document.getElementById('fth1').outerHTML;
     }''')
 
-    print(stock)
-
-    stock_df,  = pd.read_html(stock)
+    stock_df,  = pd.read_html(StringIO(stock))
     stock_df.to_csv(f'./data/{filename}')
 
     browser.close()
