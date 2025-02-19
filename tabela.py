@@ -1,30 +1,34 @@
 from playwright.sync_api import sync_playwright
 import time
 import datetime
+import pandas as pd
 
 # Format the date as YYYY-MM-DD
 date_string = datetime.date.today().strftime("%Y-%m-%d")
 
 # Construct the filename
-filename = f"eurpln_{date_string}.csv"
+filename = f"stock_{date_string}.csv"
 
 with sync_playwright() as p:
     browser = p.chromium.launch()
     page = browser.new_page()
-    page.goto('https://stooq.pl/q/?s=eurpln')
+    page.goto('https://stooq.pl/q/f/?s=gv.f')
 
     try:
-        page.locator('.fc-primary-button').click()
+        page.get_by_role('button', name="Zgadzam się").click()
 
-        time.sleep(5)
-    except:
+        time.sleep(10)
+    except Exception as e:
+        print(e)
         pass
 
-    rate = page.evaluate('''() => {
-        return document.getElementById('aq_eurpln#1_c5').textContent;
+    stock = page.evaluate('''() => {
+        return document.getElementById('fth1').outerHTML;
     }''')
 
-    with open(f"./data/{filename}", "w") as file:
-        file.write(rate)
+    print(stock)
+
+    stock_df,  = pd.read_html(stock)
+    stock_df.to_csv(f'./data/{filename}')
 
     browser.close()
