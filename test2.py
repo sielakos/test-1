@@ -1,6 +1,7 @@
 from playwright.sync_api import sync_playwright
 import time
 import datetime
+import pandas as pd
 
 # Format the date as YYYY-MM-DD
 date_string = datetime.date.today().strftime("%Y-%m-%d")
@@ -14,17 +15,29 @@ with sync_playwright() as p:
     page.goto('https://stooq.pl/q/?s=eurpln')
 
     try:
-        page.locator('.fc-primary-button').click()
-
+        page.get_by_role('button', name="Zgadzam się").click()
         time.sleep(5)
     except:
         pass
 
-    rate = page.evaluate('''() => {
-        return document.getElementById('aq_eurpln#1_c5').textContent;
-    }''')
+    df = pd.DataFrame({'time': [], 'rate': []})
 
-    with open(f"./data/{filename}", "w") as file:
-        file.write(rate)
+    for i in range(30 * 15):
+        rate = page.evaluate('''() => {
+            const elem = document.getElementById('aq_eurpln#1_c5') ?? 
+                document.getElementById('aq_eurpln_c5');
+
+            return elem.textContent;
+        }''')
+
+        rate_time = page.evaluate('''
+            () => document.getElementById('aq_eurpln_t1').textContent;
+        ''')
+        row = pd.DataFrame({'time': [rate_time], 'rate': [rate]})
+        df = pd.concat([df, row])
+        time.sleep(4)
+
+    df.reset_index(inplace=True, drop=True)
+    df.to_csv(f'./data/{filename}')
 
     browser.close()
